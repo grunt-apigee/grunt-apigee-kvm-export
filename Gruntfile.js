@@ -29,24 +29,26 @@ module.exports = function(grunt) {
       tests: ['tmp']
     },
 
-    // Configuration to be run (and then tested).
     apigee_kvm_export: {
         "testmyapi" : {
           options: {
             type: "org",
-            dest: 'config/kvm/testmyapi'
+            dest: 'config/kvm/testmyapi',
+            match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/
           }
         },
         "testmyapi-prod" : {
           options: {
             type: "env",
-            dest: 'config/kvm/testmyapi/testmyapi-prod'
+            dest: 'config/kvm/testmyapi/testmyapi-prod',
+            match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/
           }
         },
         "testmyapi-test" : {
           options: {
             type: "env",
-            dest: 'config/kvm/testmyapi/testmyapi-test'
+            dest: 'config/kvm/testmyapi/testmyapi-test',
+            match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/
           }
         }
     },

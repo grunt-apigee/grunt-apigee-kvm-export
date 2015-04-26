@@ -13,23 +13,18 @@ var apigee = require('apigee-sdk-mgmt-api'),
 
 module.exports = function(grunt) {
   grunt.registerMultiTask('apigee_kvm_export', 'Exports Apigee Edge KVM entries to a directory.', function() {
+    var done = this.async();
     var options = this.options({
       type: 'env',
+      dest: './',
+      match: /(.*?)$/
     });
-    var done = this.async();
-    if(options.type === 'env'){
-      grunt.log.writeln('Retrieving KVMs at environment level...');
-      apigee.getKVMsEnvironment(
-        grunt.config.get("apigee_profiles")[grunt.option('env')],
-        getKVMList.bind( { grunt: grunt, options: options, done: done } ),
-        grunt.option('curl'));
-    }else if(options.type === 'org'){
-      grunt.log.writeln('Retrieving KVMs at organization level...');
-      apigee.getKVMsOrganization(
-        grunt.config.get("apigee_profiles")[grunt.option('env')],
-        getKVMList.bind( { grunt: grunt, options: options, done: done } ),
-        grunt.option('curl'));
-    }
+    //grunt.log.writeln('Retrieving KVMs at environment level...');
+    apigee.getKVMList(
+      grunt.config.get("apigee_profiles")[grunt.option('env')],
+      options.type,
+      getKVMList.bind( { grunt: grunt, options: options, done: done } ),
+      grunt.option('curl'));
   });
 };
 
@@ -45,30 +40,21 @@ function getKVMList(err, response, body){
 }
 
 function saveKVM(kvmName, cb){
-  if(!_.startsWith(kvmName,'__')){
-    if(this.options.type === 'env'){
-      apigee.getKVMEnvironment(
+  //if(!_.startsWith(kvmName,'__')){
+    if(kvmName.match(this.options.match)){
+      apigee.getKVM(
         this.grunt.config.get("apigee_profiles")[this.grunt.option('env')],
         kvmName,
+        this.options.type,
         function(err, response, body) {
           this.grunt.log.writeln('writing KVM config file: ' + this.options.dest + '/' + kvmName + '.json');
           this.grunt.file.write(this.options.dest + '/' + kvmName + '.json', body);
           cb(err);
         }.bind( { grunt : this.grunt, options : this.options } ),
         this.grunt.option('curl'));
-    }else if(this.options.type === 'org'){
-      apigee.getKVMOrganization(
-        this.grunt.config.get("apigee_profiles")[this.grunt.option('env')],
-        kvmName,
-        function(err, response, body) {
-          this.grunt.log.writeln('writing KVM config file: ' + this.options.dest + '/' + kvmName + '.json');
-          this.grunt.file.write(this.options.dest + '/' + kvmName + '.json', body);
-          cb(err);
-        }.bind( { grunt : this.grunt, options : this.options } ),
-        this.grunt.option('curl'));
-    }
   }else{
     this.grunt.log.debug('skipping KVM name: ' + kvmName);
+    cb();
   }
 }
 

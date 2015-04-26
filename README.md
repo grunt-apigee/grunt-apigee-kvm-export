@@ -25,63 +25,85 @@ In your project's Gruntfile, add a section named `apigee_kvm_export` to the data
 ```js
 grunt.initConfig({
   apigee_kvm_export: {
-    options: {
-      // Task-specific options go here.
+    "testmyapi" : { //target specific options go here, in this example first target is testmyapi. This will be replaced with your org in Apigee Edge
+      options: {
+        type: "org",
+        dest: 'config/kvm/testmyapi',
+        match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/ when match is missing
+      }
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
+    "testmyapi-prod" : { //target specific options go here, in this example first target is testmyapi environment and prod org.
+      options: {
+        type: "env",
+        dest: 'config/kvm/testmyapi/testmyapi-prod',
+        match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/ when match is missing
+      }
+    }
+  }
 });
 ```
 
 ### Options
 
-#### options.separator
+#### options.type
 Type: `String`
-Default value: `',  '`
+Default value: `'env'`
 
-A string value that is used to do something with whatever.
+A string value that is used to do retrieve KVM at specific scope. Valid values environment and organization.
 
-#### options.punctuation
+#### options.dest
 Type: `String`
-Default value: `'.'`
+Default value: `'./'`
 
-A string value that is used to do something else with whatever else.
+A string value that is used to specify where to save KVM files. Will use root folder in absence of this option.
+
+#### options.match
+Type: `RegEx`
+Default value: `/(.*?)$/`
+
+A RegEx value that is used to specify which KVM names will be exported. By default, all KVMs are exported. Specify multiple KVM entries with vertical bars. /^(passwords|targets)$/
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+In this example, two targets are declared testmyapi and testmyapi-prod. Each target has defined options as per above directions.
 
 ```js
 grunt.initConfig({
   apigee_kvm_export: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    "testmyapi" : { //target specific options go here, in this example first target is testmyapi. This will be replaced with your org in Apigee Edge
+      options: {
+        type: "org",
+        dest: 'config/kvm/testmyapi',
+        match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/ when match is missing
+      }
     },
+    "testmyapi-prod" : { //target specific options go here, in this example first target is testmyapi environment and prod org.
+      options: {
+        type: "env",
+        dest: 'config/kvm/testmyapi/testmyapi-prod',
+        match: /^(passwords|targets)$/ //  exports all KVMs by default or /(.*?)$/ when match is missing
+      }
+    }
   },
 });
 ```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Incorporating this plugin to Apigee Grunt Scripts
+Each target is designed to be executed based on the flags passed by users. Therefore, it is highly recommended to select targets leveraging these flags. For instance, the following command explains how to switch from one organization and organization to another one.
 
 ```js
-grunt.initConfig({
-  apigee_kvm_export: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
+grunt.registerTask('apigee_kvm_export_full',
+  ['apigee_kvm_export:' + grunt.config.get("apigee_profiles")[grunt.option('env')].org,
+  'apigee_kvm_export:' + grunt.config.get("apigee_profiles")[grunt.option('env')].org + '-' + grunt.option('env')
+  ]);
 ```
+which can be executed with grunt-cli as:
 
+```bash
+grunt apigee_kvm_export_full --env=test --username=$ae_username --password=$ae_password --stack --curl
+```
+__Note: apigee-config.js contains the definition of the Apigee-Edge profiles. These profiles are required to be loaded within grunt.initConfig. For a full example please see this plugin Gruntfile.js file__
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
