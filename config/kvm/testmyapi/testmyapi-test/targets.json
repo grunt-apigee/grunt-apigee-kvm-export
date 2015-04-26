@@ -1,0 +1,16 @@
+{
+  "entry" : [ {
+    "name" : "Yahoo_Weather_Target",
+    "value" : "http://weather.yahooapis.com/forecastrss"
+  }, {
+    "name" : "Yahoo_Weather_Password",
+    "value" : "123458"
+  }, {
+    "name" : "Key1",
+    "value" : "value_one-test"
+  }, {
+    "name" : "Key2",
+    "value" : "value_two-test"
+  } ],
+  "name" : "targets"
+}
