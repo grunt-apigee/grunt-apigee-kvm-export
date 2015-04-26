@@ -1,7 +1,0 @@
-{
-  "entry" : [ {
-    "name" : "a85e35bd-963a-433b-a161-d441280c0f43",
-    "value" : "{\"createdBy\":\"noreply_admin@apigee.com\",\"lastModifiedBy\":\"noreply_admin@apigee.com\",\"displayName\":\"Custom Report Test\",\"sortbyCols\":[],\"timeUnit\":\"hour\",\"timeDuration\":\"1mn\",\"dimensions\":[\"developer_app\"],\"chartType\":\"column\",\"tags\":[],\"comments\":[],\"metrics\":[{\"function\":\"sum\",\"name\":\"message_count\"},{\"function\":\"sum\",\"name\":\"cache_hit\"}],\"properties\":{\"__ui__\":[{\"name\":\"accuracy\"},{\"name\":\"description\",\"value\":\"Custom Report Test\"}]},\"org\":\"testmyapi\",\"env\":\"test\",\"createdAt\":1382299435263,\"lastViewedAt\":1416237982486,\"lastModifiedAt\":1382314227477,\"name\":\"a85e35bd-963a-433b-a161-d441280c0f43\"}"
-  } ],
-  "name" : "CustomReportstestmyapi$a85e35bd-963a-433b-a161-d441280c0f43"
-}
