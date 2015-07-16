@@ -19,7 +19,7 @@ module.exports = function(grunt) {
       dest: './',
       match: /(.*?)$/
     });
-    //grunt.log.writeln('Retrieving KVMs at environment level...');
+    grunt.log.writeln('Retrieving KVMs at environment level...');
     apigee.getKVMList(
       grunt.config.get("apigee_profiles")[grunt.option('env')],
       options.type,
